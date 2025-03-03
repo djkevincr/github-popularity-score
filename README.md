@@ -26,15 +26,15 @@ Kevin Ratnasekera
   indexing needs ( pagination ) and query performance. However considering data horizontal scalability with massive 
   data sets we could explore NOSQL with sharding and that is future improvement.
 * H2 embedded SQL database used only to demonstrate functional side of the application and keep things simple. 
-  These embedded databases are not production ready or scalable. Memory backed store will lose stored 
-  in case application crashes all date will be lost. Automate testing can be easier with embedded databases. 
+  These embedded databases are not production ready or scalable. Memory backed store will lose stored data
+  in case application crashes. Automate testing and Integration testing can be easier with embedded databases. 
   Assuming this is read heavy system multiple read replicas will be helpful. Ideally we should point to external database 
   with such configuration.
 * Using docker for containerization and easy deployment/replication in any environment.
 * All API endpoints should be stateless. Deploying applications on multiple machines could increase the throughput. ( TPS )
   It also helps if multiple Github users accounts can be used parallely on machines. This is because of rate limiting 
   on Github API happens at user basis.
-* Strategy design pattern is used for Scoring Strategy. So that can we can easily plug add new Scoring Strategies in future. 
+* Strategy design pattern is used for Scoring Strategy. So that can we can easily plug new Scoring Strategies in future. 
 
 # Further improvements
 
