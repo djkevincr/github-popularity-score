@@ -105,7 +105,7 @@ daysSinceLastUpdate > 28 && daysSinceLastUpdate <= 56 - 1 point
   So it s not required to docker build manually. Make sure docker is up and running locally before executing maven build command.
   Notice the docker image name and tag used in the below example.
 * ```mvn clean install```
-* ``` docker run -e SEARCH_LANGUAGE='java' -e SEARCH_CREATED_DATE='2014-02-011' -e GITHUB_API_KEY='ghp_' -e DATA_FETCH_ENABLED='true' -p 8080:8080 github-popularity-score:0.0.1 ```
+* ``` docker run -e SEARCH_LANGUAGE='java' -e SEARCH_CREATED_DATE='2014-02-01' -e GITHUB_API_KEY='ghp_' -e DATA_FETCH_ENABLED='true' -p 8080:8080 github-popularity-score:0.0.1 ```
 * The spring boot service will be running at ```localhost:8080```
 * Notice the environment variables passed above. Language and created date are inputs for Github Search query. 
   Github API key is used as Authorization header. Data fetch boolean variable indicates whether data fetch from Github 
