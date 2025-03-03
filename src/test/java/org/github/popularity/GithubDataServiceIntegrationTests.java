@@ -16,11 +16,16 @@
  */
 package org.github.popularity;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.github.popularity.controller.GithubRepoDataController;
+import org.github.popularity.dto.GithubRepoDTO;
+import org.github.popularity.dto.GithubSearchResponseDTO;
 import org.github.popularity.mapper.DataMapper;
 import org.github.popularity.model.GithubRepo;
 import org.github.popularity.repo.GithubRepository;
 import org.github.popularity.scoring.WeightedScoringStrategy;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +34,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -81,15 +87,28 @@ class GithubDataServiceIntegrationTests {
     repos.forEach(repo -> {
       githubRepository.save(repo);
     });
-    String  dbFetchUrl = ASYNC_URL_TEMPLATE
+    String dbFetchUrl = ASYNC_URL_TEMPLATE
             .replace("{language}", "java")
             .replace("{date}", "2025-01-01")
             .replace("{offset}", "0")
-            .replace("{limit}", "10");
+            .replace("{limit}", "20");
 
-    this.mockMvc.perform(get(dbFetchUrl))
+    MvcResult mvcResult = this.mockMvc.perform(get(dbFetchUrl))
             .andExpect(status().is2xxSuccessful())
-            .andExpect(jsonPath("$.totalCount", is(20)));
+            .andExpect(jsonPath("$.totalCount", is(20))).andReturn();
+    String body = new String(mvcResult.getResponse().getContentAsByteArray());
+    GithubSearchResponseDTO responseDTO = new ObjectMapper()
+            .registerModule(new JavaTimeModule()).readValue(body, GithubSearchResponseDTO.class);
+    Assert.assertEquals(responseDTO.getTotalCount(), new Long(20L));
+
+    for (GithubRepoDTO item : responseDTO.getItems()) {
+      // compare repo returned by api vs whats stored in db / test json file
+      GithubRepo dbRepo = githubRepository.findByRepositoryId(item.getRepositoryId());
+      Assert.assertEquals(item.getLanguage(), dbRepo.getLanguage());
+      Assert.assertEquals(item.getRepositoryId(), dbRepo.getRepositoryId());
+      Assert.assertEquals(item.getScore(), dbRepo.getScore());
+      Assert.assertEquals(item.getUrl(), dbRepo.getUrl());
+    }
   }
 
   @Test

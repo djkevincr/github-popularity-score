@@ -16,13 +16,11 @@
  */
 package org.github.popularity.repo;
 
-import org.github.popularity.mapper.DataMapper;
 import org.github.popularity.scoring.ScoringStrategy;
 import org.github.popularity.scoring.WeightedScoringStrategy;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,20 +28,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 class ScoringStrategyTests {
-
-  @Autowired
-  private DataMapper dataMapper;
-
-  @Test
-  public void contexLoads() {
-    assertThat(dataMapper).isNotNull();
-  }
 
   @Test
   public void scoringStrategyAlgorithm() {
