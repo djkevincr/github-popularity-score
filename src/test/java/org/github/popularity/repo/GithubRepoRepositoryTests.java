@@ -73,11 +73,11 @@ class GithubRepoRepositoryTests {
       GithubRepo dbRepo = githubRepository.findByRepositoryId(repo.getRepositoryId());
       // should be equal between db stored and json parsed entities
       Assert.assertEquals(dbRepo.getUrl(), repo.getUrl());
-      Assert.assertEquals(dbRepo.getScore(), dbRepo.getScore());
-      Assert.assertEquals(dbRepo.getRepositoryId(), dbRepo.getRepositoryId());
-      Assert.assertEquals(dbRepo.getLanguage(), dbRepo.getLanguage());
-      Assert.assertEquals(dbRepo.getStargazersCount(), dbRepo.getStargazersCount());
-      Assert.assertEquals(dbRepo.getForksCount(), dbRepo.getForksCount());
+      Assert.assertEquals(dbRepo.getScore(), repo.getScore());
+      Assert.assertEquals(dbRepo.getRepositoryId(), repo.getRepositoryId());
+      Assert.assertEquals(dbRepo.getLanguage(), repo.getLanguage());
+      Assert.assertEquals(dbRepo.getStargazersCount(), repo.getStargazersCount());
+      Assert.assertEquals(dbRepo.getForksCount(), repo.getForksCount());
     });
 
     List<GithubRepo> paginatedList = githubRepository.fetchGithubRepos("java", LocalDate.parse("2025-01-01").atStartOfDay()
