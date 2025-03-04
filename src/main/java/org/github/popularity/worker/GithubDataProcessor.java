@@ -92,6 +92,7 @@ public class GithubDataProcessor implements Runnable {
           }
         }
       } else {
+        logger.error("Github server returned status code {}.", response.getStatus());
         // exit the thread execution
       }
     } catch (IOException ex) {
