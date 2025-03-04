@@ -86,6 +86,9 @@ public class GithubDataProcessor implements Runnable {
             // as a further improvement, should improve logic here by considering rate limit http response headers
             // x-ratelimit-remaining, x-ratelimit-used and x-ratelimit-reset
             break;
+          } else {
+            // interpret what went wrong here
+            logger.error("Github server returned status code {}.", searchResponse.getStatus());
           }
         }
       } else {
