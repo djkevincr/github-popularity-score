@@ -26,6 +26,8 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import static org.github.popularity.constant.GithubConstants.GITHUB_API_AUTHORIZATION_API_KEY_PREFIX;
+
 /**
  * Github HTTP Client Implementation.
  *
@@ -56,21 +58,15 @@ public class GithubHTTPClient implements Client {
             .replace("{date}", createdDate.toString())
             .replace("{limit}", String.valueOf(limit))
             .replace("{offset}", String.valueOf(offset));
-    Request request;
-    if (GithubConstants.GITHUB_API_UNAUTHORIZED.equals(githubAPIKey)) {
-      request = new Request.Builder()
-              .addHeader(GithubConstants.GITHUB_API_VERSION_KEY, GithubConstants.GITHUB_API_VERSION_VALUE)
-              .addHeader(GithubConstants.GITHUB_API_ACCEPT_KEY, GithubConstants.GITHUB_API_CONTENT_TYPE)
-              .url(url)
-              .build();
-    } else {
-      request = new Request.Builder()
-              .addHeader(GithubConstants.GITHUB_API_AUTHORIZATION_KEY, "Bearer " + githubAPIKey)
-              .addHeader(GithubConstants.GITHUB_API_VERSION_KEY, GithubConstants.GITHUB_API_VERSION_VALUE)
-              .addHeader(GithubConstants.GITHUB_API_ACCEPT_KEY, GithubConstants.GITHUB_API_CONTENT_TYPE)
-              .url(url)
-              .build();
+    Request.Builder requestBuilder = new Request.Builder()
+            .addHeader(GithubConstants.GITHUB_API_VERSION_KEY, GithubConstants.GITHUB_API_VERSION_VALUE)
+            .addHeader(GithubConstants.GITHUB_API_ACCEPT_KEY, GithubConstants.GITHUB_API_CONTENT_TYPE);
+    if (!GithubConstants.GITHUB_API_UNAUTHORIZED.equals(githubAPIKey)) {
+      requestBuilder.addHeader(GithubConstants.GITHUB_API_AUTHORIZATION_KEY,
+              GITHUB_API_AUTHORIZATION_API_KEY_PREFIX + githubAPIKey);
     }
+    Request request = requestBuilder.url(url)
+            .build();
     return new HTTPResponse(client.newCall(request).execute());
   }
 

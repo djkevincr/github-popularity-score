@@ -34,6 +34,16 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.github.popularity.constant.GithubConstants.DATA_FIELD_ITEMS;
+import static org.github.popularity.constant.GithubConstants.DATA_FIELD_LANGUAGE;
+import static org.github.popularity.constant.GithubConstants.DATA_FIELD_CREATED_AT;
+import static org.github.popularity.constant.GithubConstants.DATA_FIELD_ID;
+import static org.github.popularity.constant.GithubConstants.DATA_FIELD_CLONE_URL;
+import static org.github.popularity.constant.GithubConstants.DATA_FIELD_STARGAZERS_COUNT;
+import static org.github.popularity.constant.GithubConstants.DATA_FIELD_FORKS_COUNT;
+import static org.github.popularity.constant.GithubConstants.DATA_FIELD_PUSHED_AT;
+import static org.github.popularity.constant.GithubConstants.DATA_FIELD_TOTAL_COUNT;
+
 /**
  * Data mapper component to map DTO to Domain and Domain to DTO vice versa.
  *
@@ -50,19 +60,19 @@ public class DataMapper {
                                        ScoringStrategy scoringStrategy) throws JsonProcessingException {
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(searchResponse);
-    JsonNode itemsNode = root.get("items");
+    JsonNode itemsNode = root.get(DATA_FIELD_ITEMS);
     OffsetDateTime scoredTime = OffsetDateTime.now(ZoneOffset.UTC);
     List<GithubRepo> items = new ArrayList<>();
     if (itemsNode.isArray()) {
       for (JsonNode node : itemsNode) {
         GithubRepo githubRepo = new GithubRepo();
-        githubRepo.setLanguage(node.get("language").asText().toLowerCase(Locale.ROOT));
-        githubRepo.setCreatedDate(OffsetDateTime.parse(node.get("created_at").asText()));
-        githubRepo.setRepositoryId(node.get("id").asLong());
-        githubRepo.setUrl(node.get("clone_url").asText());
-        githubRepo.setStargazersCount(node.get("stargazers_count").asLong());
-        githubRepo.setForksCount(node.get("forks_count").asLong());
-        githubRepo.setUpdatedDate(OffsetDateTime.parse(node.get("pushed_at").asText()));
+        githubRepo.setLanguage(node.get(DATA_FIELD_LANGUAGE).asText().toLowerCase(Locale.ROOT));
+        githubRepo.setCreatedDate(OffsetDateTime.parse(node.get(DATA_FIELD_CREATED_AT).asText()));
+        githubRepo.setRepositoryId(node.get(DATA_FIELD_ID).asLong());
+        githubRepo.setUrl(node.get(DATA_FIELD_CLONE_URL).asText());
+        githubRepo.setStargazersCount(node.get(DATA_FIELD_STARGAZERS_COUNT).asLong());
+        githubRepo.setForksCount(node.get(DATA_FIELD_FORKS_COUNT).asLong());
+        githubRepo.setUpdatedDate(OffsetDateTime.parse(node.get(DATA_FIELD_PUSHED_AT).asText()));
         githubRepo.setScore(scoringStrategy.score(githubRepo.getStargazersCount(),
                 githubRepo.getForksCount(), githubRepo.getUpdatedDate()));
         githubRepo.setScoredDate(scoredTime);
@@ -76,22 +86,22 @@ public class DataMapper {
                                                            ScoringStrategy scoringStrategy) throws JsonProcessingException {
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(searchResponse);
-    JsonNode itemsNode = root.get("items");
+    JsonNode itemsNode = root.get(DATA_FIELD_ITEMS);
     List<GithubRepoDTO> items = new ArrayList<>();
     if (itemsNode.isArray()) {
       for (JsonNode node : itemsNode) {
         GithubRepoDTO githubRepoDTO = new GithubRepoDTO();
-        githubRepoDTO.setLanguage(node.get("language").asText().toLowerCase(Locale.ROOT));
-        githubRepoDTO.setCreatedDate(OffsetDateTime.parse(node.get("created_at").asText()));
-        githubRepoDTO.setRepositoryId(node.get("id").asLong());
-        githubRepoDTO.setUrl(node.get("clone_url").asText());
-        githubRepoDTO.setScore(scoringStrategy.score(node.get("stargazers_count").asLong(),
-                node.get("forks_count").asLong(), OffsetDateTime.parse(node.get("pushed_at").asText())));
+        githubRepoDTO.setLanguage(node.get(DATA_FIELD_LANGUAGE).asText().toLowerCase(Locale.ROOT));
+        githubRepoDTO.setCreatedDate(OffsetDateTime.parse(node.get(DATA_FIELD_CREATED_AT).asText()));
+        githubRepoDTO.setRepositoryId(node.get(DATA_FIELD_ID).asLong());
+        githubRepoDTO.setUrl(node.get(DATA_FIELD_CLONE_URL).asText());
+        githubRepoDTO.setScore(scoringStrategy.score(node.get(DATA_FIELD_STARGAZERS_COUNT).asLong(),
+                node.get(DATA_FIELD_FORKS_COUNT).asLong(), OffsetDateTime.parse(node.get(DATA_FIELD_PUSHED_AT).asText())));
         items.add(githubRepoDTO);
       }
     }
     GithubSearchResponseDTO githubSearchResponseDTO = new GithubSearchResponseDTO();
-    githubSearchResponseDTO.setTotalCount(root.get("total_count").asLong());
+    githubSearchResponseDTO.setTotalCount(root.get(DATA_FIELD_TOTAL_COUNT).asLong());
     githubSearchResponseDTO.setItems(items);
     return githubSearchResponseDTO;
   }
@@ -113,7 +123,7 @@ public class DataMapper {
   public Long toTotalCount(String searchResponse) throws JsonProcessingException {
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(searchResponse);
-    return root.get("total_count").asLong();
+    return root.get(DATA_FIELD_TOTAL_COUNT).asLong();
   }
 
   private GithubRepoDTO getGithubRepoDTO(GithubRepo item) {

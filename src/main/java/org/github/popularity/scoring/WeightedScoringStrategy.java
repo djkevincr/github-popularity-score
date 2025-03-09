@@ -20,16 +20,16 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
+import static org.github.popularity.constant.GithubConstants.FORK_COUNT_WEIGHT;
+import static org.github.popularity.constant.GithubConstants.LAST_UPDATED_WEIGHT;
+import static org.github.popularity.constant.GithubConstants.STARGAZERS_COUNT_WEIGHT;
+
 /**
  * Weighted average Scoring Strategy Interface Implementation.
  *
  * @author Kevin Ratnasekera
  */
 public class WeightedScoringStrategy implements ScoringStrategy {
-
-  private static final int STARGAZERS_COUNT_WEIGHT = 4;
-  private static final int FORK_COUNT_WEIGHT = 4;
-  private static final int LAST_UPDATED_WEIGHT = 2;
 
   /**
    * Algorithm is based on weighted average score. This scoring algorithm is implemented simple and straight forward.
@@ -68,31 +68,31 @@ public class WeightedScoringStrategy implements ScoringStrategy {
     // stargazers score
     if (stargazersCount >= 100000) {
       score = score + STARGAZERS_COUNT_WEIGHT * 4;
-    } else if (stargazersCount < 100000 && stargazersCount >= 1000) {
+    } else if (stargazersCount >= 1000) {
       score = score + STARGAZERS_COUNT_WEIGHT * 3;
-    } else if (stargazersCount < 1000 && stargazersCount >= 100) {
+    } else if (stargazersCount >= 100) {
       score = score + STARGAZERS_COUNT_WEIGHT * 2;
-    } else if (stargazersCount < 100 && stargazersCount > 0) {
-      score = score + STARGAZERS_COUNT_WEIGHT * 1;
+    } else if (stargazersCount > 0) {
+      score = score + STARGAZERS_COUNT_WEIGHT;
     }
 
     // forks score
     if (forksCount >= 1000) {
       score = score + FORK_COUNT_WEIGHT * 4;
-    } else if (forksCount < 1000 && forksCount >= 500) {
+    } else if (forksCount >= 500) {
       score = score + FORK_COUNT_WEIGHT * 3;
-    } else if (forksCount < 500 && forksCount >= 100) {
+    } else if (forksCount >= 100) {
       score = score + FORK_COUNT_WEIGHT * 2;
-    } else if (forksCount < 100 && forksCount > 0) {
-      score = score + FORK_COUNT_WEIGHT * 1;
+    } else if (forksCount > 0) {
+      score = score + FORK_COUNT_WEIGHT;
     }
 
     // last updated score
     long daysSinceLastUpdate = ChronoUnit.DAYS.between(lastUpdated, OffsetDateTime.now(ZoneOffset.UTC));
     if (daysSinceLastUpdate <= 28) {
       score = score + LAST_UPDATED_WEIGHT * 2;
-    } else if (daysSinceLastUpdate > 28 && daysSinceLastUpdate <= 56) {
-      score = score + LAST_UPDATED_WEIGHT * 1;
+    } else if (daysSinceLastUpdate <= 56) {
+      score = score + LAST_UPDATED_WEIGHT;
     }
 
     long totalWeight = 4 * STARGAZERS_COUNT_WEIGHT + 4 * FORK_COUNT_WEIGHT + 2 * LAST_UPDATED_WEIGHT;

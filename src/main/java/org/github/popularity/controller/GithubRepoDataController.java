@@ -107,7 +107,7 @@ public class GithubRepoDataController {
                                                    @RequestParam("offset") int offset,
                                                    @RequestParam("limit") int limit) {
     logger.info("Client request received for async endpoint. language: {} created date: {} offset: {} limit: {}", language, createdDate, offset, limit);
-    validateParameters(language, limit);
+    validateParameters(language, createdDate, limit);
     return ResponseEntity.ok(githubRepoDataService.searchFromDatabase(language, createdDate, offset, limit));
   }
 
@@ -117,13 +117,16 @@ public class GithubRepoDataController {
                                               @RequestParam("offset") int offset,
                                               @RequestParam("limit") int limit) {
     logger.info("Client request received for sync endpoint. language: {} created date:  {} offset: {} limit: {}", language, createdDate, offset, limit);
-    validateParameters(language, limit);
+    validateParameters(language, createdDate, limit);
     return ResponseEntity.ok(githubRepoDataService.searchFromAPI(language, createdDate, offset, limit));
   }
 
   private void validateParameters(String language,
+                                  LocalDate createdDate,
                                   int limit) {
-    if (Objects.isNull(Language.convert(language)) || limit > MAX_API_PAGE_SIZE) {
+    if (Objects.isNull(Language.convert(language))
+            || Objects.isNull(createdDate)
+            || limit > MAX_API_PAGE_SIZE) {
       // improve error message so that client aware what went wrong.
       throw new BadRequestException("Request validations failed.");
     }

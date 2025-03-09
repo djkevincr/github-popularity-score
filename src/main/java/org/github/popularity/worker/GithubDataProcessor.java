@@ -92,8 +92,8 @@ public class GithubDataProcessor implements Runnable {
           }
         }
       } else {
+        // interpret what went wrong here
         logger.error("Github server returned status code {}.", response.getStatus());
-        // exit the thread execution
       }
     } catch (IOException ex) {
       logger.error("Exception occurred when calling Github Search endpoint.", ex);
