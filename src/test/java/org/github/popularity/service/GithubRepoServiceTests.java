@@ -22,6 +22,7 @@ import org.github.popularity.model.GithubRepo;
 import org.github.popularity.repo.GithubRepository;
 import org.github.popularity.scoring.WeightedScoringStrategy;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +53,11 @@ class GithubRepoServiceTests {
 
   @BeforeEach
   public void setup() {
+    githubRepository.deleteAll();;
+  }
+
+  @AfterEach
+  public void destroy() {
     githubRepository.deleteAll();;
   }
 

@@ -26,6 +26,7 @@ import org.github.popularity.model.GithubRepo;
 import org.github.popularity.repo.GithubRepository;
 import org.github.popularity.scoring.WeightedScoringStrategy;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -71,6 +72,11 @@ class GithubDataServiceIntegrationTests {
   @BeforeEach
   public void setup() {
     githubRepository.deleteAll();
+  }
+
+  @AfterEach
+  public void destroy() {
+    githubRepository.deleteAll();;
   }
 
   @Test
@@ -156,6 +162,7 @@ class GithubDataServiceIntegrationTests {
             .replace("{date}", "2025-01-01")
             .replace("{offset}", "0")
             .replace("{limit}", "10");
+
     this.mockMvc.perform(get(dbFetchUrl))
             .andExpect(status().is2xxSuccessful());
   }
@@ -178,6 +185,7 @@ class GithubDataServiceIntegrationTests {
             .replace("{date}", "2025-01-01")
             .replace("{offset}", "0")
             .replace("{limit}", "400");
+
     this.mockMvc.perform(get(dbFetchUrl))
             .andExpect(status().isBadRequest());
   }

@@ -132,7 +132,7 @@ class DataMapperTests {
       pointer++;
     }
   }
-  
+
   @Test
   public void toGithubRepoDataMapperTest() throws IOException {
     Path filePath = Paths.get(getClass().getClassLoader().getResource(TEST_FILE).getPath());
