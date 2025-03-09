@@ -70,26 +70,26 @@ class DataMapperTests {
     urls.add("https://github.com/Tadeo-2404/Terraform-Backend.git");
 
     // add test data repository ids
-    repoIds.add(new Long(941684790));
-    repoIds.add(new Long(939807181));
-    repoIds.add(new Long(941693605));
-    repoIds.add(new Long(939411798));
-    repoIds.add(new Long(941272546));
-    repoIds.add(new Long(941237945));
-    repoIds.add(new Long(940406386));
-    repoIds.add(new Long(934413162));
-    repoIds.add(new Long(941693167));
-    repoIds.add(new Long(939807132));
-    repoIds.add(new Long(940307313));
-    repoIds.add(new Long(940301368));
-    repoIds.add(new Long(936421640));
-    repoIds.add(new Long(932359317));
-    repoIds.add(new Long(941694200));
-    repoIds.add(new Long(935702993));
-    repoIds.add(new Long(929820209));
-    repoIds.add(new Long(941672666));
-    repoIds.add(new Long(939807400));
-    repoIds.add(new Long(941351273));
+    repoIds.add(Long.valueOf(941684790));
+    repoIds.add(Long.valueOf(939807181));
+    repoIds.add(Long.valueOf(941693605));
+    repoIds.add(Long.valueOf(939411798));
+    repoIds.add(Long.valueOf(941272546));
+    repoIds.add(Long.valueOf(941237945));
+    repoIds.add(Long.valueOf(940406386));
+    repoIds.add(Long.valueOf(934413162));
+    repoIds.add(Long.valueOf(941693167));
+    repoIds.add(Long.valueOf(939807132));
+    repoIds.add(Long.valueOf(940307313));
+    repoIds.add(Long.valueOf(940301368));
+    repoIds.add(Long.valueOf(936421640));
+    repoIds.add(Long.valueOf(932359317));
+    repoIds.add(Long.valueOf(941694200));
+    repoIds.add(Long.valueOf(935702993));
+    repoIds.add(Long.valueOf(929820209));
+    repoIds.add(Long.valueOf(941672666));
+    repoIds.add(Long.valueOf(939807400));
+    repoIds.add(Long.valueOf(941351273));
   }
 
   @Autowired
@@ -115,7 +115,7 @@ class DataMapperTests {
     Path filePath = Paths.get(getClass().getClassLoader().getResource(TEST_FILE).getPath());
     String content = new String(Files.readAllBytes(Paths.get(filePath.toUri())));
     GithubSearchResponseDTO responseDTO = dataMapper.toGithubSearchResponseDTO(content, new WeightedScoringStrategy());
-    Assert.assertEquals(responseDTO.getTotalCount(), new Long(222223L));
+    Assert.assertEquals(responseDTO.getTotalCount(), Long.valueOf(222223L));
     Assert.assertEquals(responseDTO.getItems().size(), 20);
     long javaRepoCount = responseDTO.getItems().stream().filter(item -> item.getLanguage().equals("java")).count();
     Assert.assertEquals(javaRepoCount, 20);

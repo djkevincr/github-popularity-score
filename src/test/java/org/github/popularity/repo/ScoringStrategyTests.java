@@ -38,27 +38,27 @@ class ScoringStrategyTests {
     // total score of 100
     ScoringStrategy scoringStrategy = new WeightedScoringStrategy();
     Double score = scoringStrategy.score(150000L, 20000L, OffsetDateTime.now(ZoneOffset.UTC));
-    Assert.assertEquals(score, new Double(100));
+    Assert.assertEquals(score, Double.valueOf(100));
 
     // 3 points each stars and fork count
     score = scoringStrategy.score(20000L, 600L, OffsetDateTime.now(ZoneOffset.UTC).minusDays(30));
-    Assert.assertEquals(score, new Double(72.22222222222221));
+    Assert.assertEquals(score, Double.valueOf(72.22222222222221));
 
     // 2 points each stars and fork count
     score = scoringStrategy.score(200L, 200L, OffsetDateTime.now(ZoneOffset.UTC).minusDays(100));
-    Assert.assertEquals(score, new Double(44.44444444444444));
+    Assert.assertEquals(score, Double.valueOf(44.44444444444444));
 
     // 1 points each stars and fork count
     score = scoringStrategy.score(50L, 50L, OffsetDateTime.now(ZoneOffset.UTC).minusDays(100));
-    Assert.assertEquals(score, new Double(22.22222222222222));
+    Assert.assertEquals(score, Double.valueOf(22.22222222222222));
 
     // 1 and 0 points each stars and fork count
     score = scoringStrategy.score(50L, 0L, OffsetDateTime.now(ZoneOffset.UTC).minusDays(100));
-    Assert.assertEquals(score, new Double(11.11111111111111));
+    Assert.assertEquals(score, Double.valueOf(11.11111111111111));
 
     //total score of 0
     score = scoringStrategy.score(0L, 0L, OffsetDateTime.now(ZoneOffset.UTC).minusDays(100));
-    Assert.assertEquals(score, new Double(0));
+    Assert.assertEquals(score, Double.valueOf(0));
   }
 
 }
