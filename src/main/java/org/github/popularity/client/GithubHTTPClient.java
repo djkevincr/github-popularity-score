@@ -18,7 +18,6 @@ package org.github.popularity.client;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import org.github.popularity.constant.GithubConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +25,14 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import static org.github.popularity.constant.GithubConstants.GITHUB_API_VERSION_KEY;
+import static org.github.popularity.constant.GithubConstants.GITHUB_API_VERSION_VALUE;
+import static org.github.popularity.constant.GithubConstants.GITHUB_API_ACCEPT_KEY;
+import static org.github.popularity.constant.GithubConstants.GITHUB_API_CONTENT_TYPE;
+import static org.github.popularity.constant.GithubConstants.GITHUB_REPOSITORY_SEARCH_QUERY;
 import static org.github.popularity.constant.GithubConstants.GITHUB_API_AUTHORIZATION_API_KEY_PREFIX;
+import static org.github.popularity.constant.GithubConstants.GITHUB_API_UNAUTHORIZED;
+import static org.github.popularity.constant.GithubConstants.GITHUB_API_AUTHORIZATION_KEY;
 
 /**
  * Github HTTP Client Implementation.
@@ -53,19 +59,20 @@ public class GithubHTTPClient implements Client {
                                         LocalDate createdDate,
                                         int offset,
                                         int limit) throws IOException {
-    String url = githubBaseUrl + GithubConstants.GITHUB_REPOSITORY_SEARCH_QUERY
+    String url = githubBaseUrl + GITHUB_REPOSITORY_SEARCH_QUERY
             .replace("{language}", language)
             .replace("{date}", createdDate.toString())
             .replace("{limit}", String.valueOf(limit))
             .replace("{offset}", String.valueOf(offset));
     Request.Builder requestBuilder = new Request.Builder()
-            .addHeader(GithubConstants.GITHUB_API_VERSION_KEY, GithubConstants.GITHUB_API_VERSION_VALUE)
-            .addHeader(GithubConstants.GITHUB_API_ACCEPT_KEY, GithubConstants.GITHUB_API_CONTENT_TYPE);
-    if (!GithubConstants.GITHUB_API_UNAUTHORIZED.equals(githubAPIKey)) {
-      requestBuilder.addHeader(GithubConstants.GITHUB_API_AUTHORIZATION_KEY,
+            .addHeader(GITHUB_API_VERSION_KEY, GITHUB_API_VERSION_VALUE)
+            .addHeader(GITHUB_API_ACCEPT_KEY, GITHUB_API_CONTENT_TYPE);
+    if (!GITHUB_API_UNAUTHORIZED.equals(githubAPIKey)) {
+      requestBuilder.addHeader(GITHUB_API_AUTHORIZATION_KEY,
               GITHUB_API_AUTHORIZATION_API_KEY_PREFIX + githubAPIKey);
     }
-    Request request = requestBuilder.url(url)
+    Request request = requestBuilder
+            .url(url)
             .build();
     return new HTTPResponse(client.newCall(request).execute());
   }

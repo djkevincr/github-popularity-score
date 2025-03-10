@@ -24,6 +24,7 @@ import org.github.popularity.repo.GithubRepository;
 import org.github.popularity.scoring.WeightedScoringStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -62,12 +63,12 @@ public class GithubDataProcessor implements Runnable {
   public void run() {
     try {
       Response response = client.sendSearchRequest(githubSearchLanguage, LocalDate.parse(githubSearchCreatedDate), 0, 1);
-      if (response.getStatus() == 200) {
+      if (response.getStatus() == HttpStatus.OK.value()) {
         Long totalCount = dataMapper.toTotalCount(response.getBody());
         Long totalPages = totalCount / GITHUB_SEARCH_PAGE_SIZE;
         for (int currentPage = 0; currentPage < totalPages; currentPage++) {
           Response searchResponse = client.sendSearchRequest(githubSearchLanguage, LocalDate.parse(githubSearchCreatedDate), currentPage, GITHUB_SEARCH_PAGE_SIZE);
-          if (searchResponse.getStatus() == 200) {
+          if (searchResponse.getStatus() == HttpStatus.OK.value()) {
             List<GithubRepo> repoList = dataMapper.toGithubRepo(searchResponse.getBody(), new WeightedScoringStrategy());
             repoList.forEach(repo -> {
               GithubRepo dbRepo = githubRepository.findByRepositoryId(repo.getRepositoryId());
@@ -80,8 +81,8 @@ public class GithubDataProcessor implements Runnable {
               }
               logger.info("Github repository {} url {} score {} stored in database.", repo.getRepositoryId(), repo.getUrl(), repo.getScore());
             });
-          } else if (searchResponse.getStatus() == 403) {
-            logger.info("Rate limit exceeded in Github search endpoint.");
+          } else if (searchResponse.getStatus() == HttpStatus.FORBIDDEN.value()) {
+            logger.error("Rate limit exceeded in Github search endpoint.");
             // exit the thread execution here.
             // as a further improvement, should improve logic here by considering rate limit http response headers
             // x-ratelimit-remaining, x-ratelimit-used and x-ratelimit-reset

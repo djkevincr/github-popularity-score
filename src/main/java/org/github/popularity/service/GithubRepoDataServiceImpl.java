@@ -27,6 +27,7 @@ import org.github.popularity.scoring.WeightedScoringStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -74,7 +75,7 @@ public class GithubRepoDataServiceImpl implements GithubRepoDataService {
                                                int limit) {
     try {
       Response httpResponse = client.sendSearchRequest(language, createdDate, offset, limit);
-      if (httpResponse.getStatus() == 200) {
+      if (httpResponse.getStatus() == HttpStatus.OK.value()) {
         return dataMapper.toGithubSearchResponseDTO(httpResponse.getBody(), new WeightedScoringStrategy());
       } else {
         // improve with meaningful error messages

@@ -62,7 +62,7 @@ public class GithubRepoDataController {
 
   // components
   @Autowired
-  GithubRepoDataService githubRepoDataService;
+  private GithubRepoDataService githubRepoDataService;
   @Autowired
   private GithubRepository githubRepository;
   @Autowired
